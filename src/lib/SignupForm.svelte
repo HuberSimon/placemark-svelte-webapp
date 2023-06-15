@@ -1,8 +1,15 @@
 <script>
+    import { goto } from '$app/navigation';
+    
     let firstName = '';
     let lastName = '';
     let email = '';
     let password = '';
+
+    async function signup() {
+        console.log(`attemting to sign up email: ${email}`);
+        goto('/');
+    }
 </script>
 
 <form>

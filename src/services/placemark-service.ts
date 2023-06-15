@@ -1,0 +1,146 @@
+import axios from "axios";
+import { latestPlacemark, loggedInUser } from "../stores";
+import type { Category, Placemark } from "./placemark-types";
+
+
+export const placemarkService = {
+    baseUrl: "http://localhost:3000",
+
+	async login(email: string, password: string): Promise<boolean> {
+		try {
+			const response = await axios.post(`${this.baseUrl}/api/users/authenticate`, { email, password });
+			axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.token;
+			if (response.data.success) {
+				loggedInUser.set({
+					email: email,
+					token: response.data.token,
+					_id: response.data.id
+				});
+				localStorage.user = JSON.stringify({ email: email, token: response.data.token, _id: response.data.id });
+				return true;
+			}
+			return false;
+		} catch (error) {
+			console.log(error);
+			return false;
+		}
+	},
+
+	async logout() {
+		loggedInUser.set({
+			email: "",
+			token: "",
+			_id: ""
+		});
+		axios.defaults.headers.common["Authorization"] = "";
+	},
+
+	async signup(firstName: string, lastName: string, email: string, password: string): Promise<boolean> {
+		try {
+			const userDetails = {
+				firstName: firstName,
+				lastName: lastName,
+				email: email,
+				password: password
+			};
+			await axios.post(this.baseUrl + "/api/users", userDetails);
+			return true;
+		} catch (error) {
+			return false;
+		}
+	},
+
+	checkPageRefresh() {
+		if (!axios.defaults.headers.common["Authorization"]) {
+			const userCredentials = localStorage.user;
+			if (userCredentials) {
+				const savedUser = JSON.parse(userCredentials);
+				loggedInUser.set({
+					email: savedUser.email,
+					token: savedUser.token,
+					_id: savedUser._id
+				});
+				axios.defaults.headers.common["Authorization"] = "Bearer " + savedUser.token;
+			}
+		}
+	},
+
+	async getUserPlacemarks(): Promise<Placemark[]> {
+		try {
+			let currUserId: string;
+			currUserId = "";
+			loggedInUser.subscribe((user) => {
+				currUserId = user._id;
+			  });
+			
+
+			const response = await axios.get(`${this.baseUrl}/api/placemarks`);
+			
+			const placemarks: Placemark[] = [];
+
+			for (const placemark of response.data) {
+				if (placemark.userid === currUserId) {
+					placemarks.push(placemark);
+				}
+			}
+			
+			return placemarks;
+		} catch (error) {
+			return [];
+		}
+	},
+
+	async createPlacemark(placemarkname: string, categoryname: string) {
+		try {
+			let currUserId: string;
+			currUserId = "";
+			loggedInUser.subscribe((user) => {
+				currUserId = user._id;
+			  });
+			const newPlacemark = {
+				userid: currUserId,
+				name: placemarkname,
+				categoryname: categoryname
+			};
+			const response = await axios.post(`${this.baseUrl}/api/placemarks`, newPlacemark);
+			if(response.status == 201)
+				return response.data;
+			else
+				return false;
+		} catch (error) {
+			return false;
+		}
+	},
+
+	async deletePlacemark(id: string) {
+		try {
+			const response = await axios.delete(`${this.baseUrl}/api/placemarks/${id}`);
+			return response.status == 204;
+		} catch (error) {
+			return false;
+		}
+	},
+
+	async getUserCategories(): Promise<Category[]> {
+		try {
+
+			const response = await axios.get(`${this.baseUrl}/api/categories`);
+			const placemarks = placemarkService.getUserPlacemarks();
+			
+			const categories: Category[] = [];
+
+			for (const category of response.data) {
+				for (const placemark of await placemarks) {
+					if (placemark.categoryid === category._id) {
+					categories.push(category);
+					break;
+					}
+				}
+			}
+			return categories;
+		} catch (error) {
+			return [];
+		}
+	}
+
+};
