@@ -1,11 +1,24 @@
-<script>
+<script lang="ts">
+    import { goto } from '$app/navigation';
+    import { placemarkService } from '../services/placemark-service';
+    
     let firstName = '';
     let lastName = '';
     let email = '';
     let password = '';
+    let errorMessage = '';
+
+    async function signup() {
+        let success = await placemarkService.signup(firstName, lastName, email, password);
+        if (success) {
+            goto("/");
+		} else {
+			errorMessage = "Error Trying to sign up";
+		}
+    }
 </script>
 
-<form>
+<form on:submit|preventDefault={signup}>
     <div class="field is-horizontal">
         <div class="field-body">
             <div class="field">
@@ -29,4 +42,9 @@
     <div class="field is-grouped">
         <button class="button is-link">Sign Up</button>
     </div>
+    {#if errorMessage}
+    <div class="section">
+        {errorMessage}
+    </div>
+    {/if}
 </form>

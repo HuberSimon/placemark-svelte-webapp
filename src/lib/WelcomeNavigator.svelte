@@ -1,4 +1,4 @@
-<div class="box is-4 level-right columns">
+<div class="is-4 level-right columns">
     <div class="row">
         <p class="is-size-7"> You are not logged in...</p>
     </div>
