@@ -2,6 +2,7 @@
     import DetailsList from '$lib/DetailsList.svelte';
 import Header from '$lib/Header.svelte';
     import MainNavigator from '$lib/MainNavigator.svelte';
+	import PlacemarkMap from '$lib/PlacemarkMap.svelte';
 	import PlacemarksForm from '$lib/PlacemarksForm.svelte';
     import PlacemarksList from '$lib/PlacemarksList.svelte';
 	import type { PageData } from "./$types";
@@ -16,6 +17,7 @@ import Header from '$lib/Header.svelte';
 <div class="columns">
     <div class="column has-text-centered">
         <DetailsList placemarkid={data.placemarkid} />
+        <PlacemarkMap />
     </div>
 
     <div class="column box mt-6 has-text-centered">

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { placemarkService } from '../services/placemark-service';
-	import { goto } from "$app/navigation";
-	import { afterUpdate, onMount } from 'svelte';
+	  import { goto } from "$app/navigation";
+	  import { afterUpdate, onMount } from 'svelte';
     export let placemarkid: string;
 
     let errorMessage = '';
@@ -65,12 +65,11 @@
 
     onMount(async () => {
         loadPlacemarkData();
-    });
+      });
 
     afterUpdate(() => {
         loadPlacemarkData();
     });
-
 
 </script>
 
@@ -137,7 +136,7 @@
               </div>
           </div>
         </div>
-
+        
       </div> 
     </div>
 </form>

@@ -22,6 +22,9 @@
 </script>
 
 <div class="is-4 level-right">
+  <div class="pr-5 level-left">
+    <img alt="sign-post" src="/sign-post.png" width="50" style="border-radius: 50%"/>
+  </div>
   <div class="pr-5">
     <div class="is-size-7 has-text-weight-bold">{greet}</div>
     {#if $loggedInUser && $loggedInUser.email}
