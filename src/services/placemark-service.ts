@@ -112,6 +112,24 @@ export const placemarkService = {
 		}
 	},
 
+
+	async getPlacemarkById(id: string): Promise<Placemark> {
+		try {
+			const response = await axios.get(`${this.baseUrl}/api/placemarks/${id}`);
+			return response.data;
+		} catch (error) {
+			return {userid: "",
+					name: "",
+					categoryid: "",
+					description: "",
+					location: "",
+					weather: "",
+					image: "",
+					_id: "",
+					};
+		}
+	},
+
 	async deletePlacemark(id: string) {
 		try {
 			const response = await axios.delete(`${this.baseUrl}/api/placemarks/${id}`);
@@ -140,6 +158,18 @@ export const placemarkService = {
 			return categories;
 		} catch (error) {
 			return [];
+		}
+	},
+
+	async updatePlacemarkDetails(placemark: Placemark) {
+		try {
+			const response = await axios.post(`${this.baseUrl}/api/placemarks/${placemark._id}/update`, placemark);
+			if(response.status == 200)
+				return response.data;
+			else
+				return {};
+		} catch (error) {
+			return {};
 		}
 	}
 

@@ -1,7 +1,7 @@
 import { placemarkService } from "../../services/placemark-service";
 export const ssr = false;
 
-export const load = async ({ params }) => {
+export const load = async () => {
 	placemarkService.checkPageRefresh();
 
 	return {

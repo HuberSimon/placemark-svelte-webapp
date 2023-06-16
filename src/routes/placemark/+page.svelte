@@ -1,6 +1,7 @@
 <script lang="ts">
     import Header from '$lib/Header.svelte';
     import MainNavigator from '$lib/MainNavigator.svelte';
+	import PlacemarkMap from '$lib/PlacemarkMap.svelte';
 	import PlacemarksForm from '$lib/PlacemarksForm.svelte';
     import PlacemarksList from '$lib/PlacemarksList.svelte';
 	import type { PageData } from "./$types";
@@ -14,7 +15,7 @@
   
 <div class="columns">
     <div class="column has-text-centered">
-        <img alt="sign-post" src="/sign-post.png" width="300" style="border-radius: 50%"/>
+        <PlacemarkMap />
     </div>
 
     <div class="column box mt-6 has-text-centered">
@@ -22,4 +23,5 @@
         <PlacemarksForm />
         <PlacemarksList placemarks={data.placemarks} userCategories={data.userCategories}  />
     </div>
+
 </div>
