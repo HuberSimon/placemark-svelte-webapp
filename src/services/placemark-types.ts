@@ -18,6 +18,8 @@ export interface Placemark {
 	categoryid: string;
 	description: string;
 	location: string;
+	locLat: number;
+	locLng: number;
 	weather: string;
 	image: string;
 	_id: string;

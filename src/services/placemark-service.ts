@@ -1,10 +1,10 @@
 import axios from "axios";
-import { latestPlacemark, loggedInUser } from "../stores";
+import { loggedInUser } from "../stores";
 import type { Category, Placemark } from "./placemark-types";
 
 
 export const placemarkService = {
-    baseUrl: "http://localhost:3000",
+    baseUrl: "https://placemark-10-kdbg.onrender.com", // "http://localhost:3000",
 
 	async login(email: string, password: string): Promise<boolean> {
 		try {
@@ -123,6 +123,8 @@ export const placemarkService = {
 					categoryid: "",
 					description: "",
 					location: "",
+					locLat: 0,
+					locLng: 0,
 					weather: "",
 					image: "",
 					_id: "",
@@ -171,6 +173,17 @@ export const placemarkService = {
 		} catch (error) {
 			return {};
 		}
-	}
+	},
 
+	async getCategoryById(id: string): Promise<Category> {
+		try {
+			const response = await axios.get(`${this.baseUrl}/api/categories/${id}`);
+			return response.data;
+		} catch (error) {
+			return {name: "",
+					count: 0,
+					_id: "",
+					};
+		}
+	},
 };

@@ -2,6 +2,7 @@
     import { placemarkService } from '../services/placemark-service';
 	  import { goto } from "$app/navigation";
 	  import { afterUpdate, onMount } from 'svelte';
+	  import PlacemarkMap from './PlacemarkMap.svelte';
     export let placemarkid: string;
 
     let errorMessage = '';
@@ -10,6 +11,8 @@
     let categoryId = '';
     let description = '';
     let location = '';
+    let locLat = '';
+    let locLng = '';
     let weather = '';
     let image = '';
     let id = '';
@@ -18,6 +21,8 @@
     let locationOut = '';
     let weatherOut = '';
     let imageOut = '';
+    let latOut = '';
+    let lngOut = '';
 
     async function deletePlacemarkDetailsById(id: string) {
         console.log("delete Detils")
@@ -28,47 +33,56 @@
         userId = placemark.userid;
         placemarkName = placemark.name;
         categoryId = placemark.categoryid;
-        if (placemark.description) descriptionOut = placemark.description;
-        if (placemark.location) locationOut = placemark.location;
-        if (placemark.weather) weatherOut = placemark.weather;
-        if (placemark.image) imageOut = placemark.image;
+        descriptionOut = placemark.description ? placemark.description : "";
+        locationOut = placemark.location ? placemark.location : "";
+        latOut = placemark.locLat ? placemark.locLat.toString() : '';
+        lngOut = placemark.locLng ? placemark.locLng.toString() : '';
+        weatherOut = placemark.weather ? placemark.weather : "";
+        imageOut = placemark.image;
         id = placemark._id;
     };
 
     async function save() {
         
-        const updatePlacemark = {
-            _id: id,
-            userid: userId,
-            name: placemarkName,
-            categoryid: categoryId,
-            description: description,
-            location: location,
-            weather: weather,
-            image: image,
+      const updatePlacemark = {
+          _id: id,
+          userid: userId,
+          name: placemarkName,
+          categoryid: categoryId,
+          description: description,
+          location: location,
+          locLat: locLat ? parseFloat(locLat) : 0,
+          locLng: locLng ? parseFloat(locLng) : 0,
+          weather: weather,
+          image: image,
 			};
+      console.log(updatePlacemark)
+      const updatedPlacemark = await placemarkService.updatePlacemarkDetails(updatePlacemark);
+      if (updatedPlacemark) {
+          descriptionOut = updatedPlacemark.description ;
+          locationOut = updatedPlacemark.location;
+          latOut = updatedPlacemark.locLat.toString();
+          lngOut = updatedPlacemark.locLng.toString();
+          weatherOut = updatedPlacemark.weather;
+          imageOut = updatedPlacemark.image;
+          description = '';
+          location = '';
+          locLat = '';
+          locLng = '';
+          weather = '';
+          loadPlacemarkData();
+      } else {
+          errorMessage = "Invalid Credentials";
+      }
 
-        const updatedPlacemark = await placemarkService.updatePlacemarkDetails(updatePlacemark);
-        if (updatedPlacemark) {
-            if (updatedPlacemark.description) descriptionOut = updatedPlacemark.description;
-            if (updatedPlacemark.location) locationOut = updatedPlacemark.location;
-            if (updatedPlacemark.weather) weatherOut = updatedPlacemark.weather;
-            if (updatedPlacemark.image) imageOut = updatedPlacemark.image;
-            description = '';
-            location = '';
-            weather = '';
-            goto("/placemark/" + placemarkid);
-        } else {
-            errorMessage = "Invalid Credentials";
-        }
     }
 
     onMount(async () => {
-        loadPlacemarkData();
+      loadPlacemarkData();
       });
 
     afterUpdate(() => {
-        loadPlacemarkData();
+      loadPlacemarkData();
     });
 
 </script>
@@ -119,24 +133,23 @@
                 <img src={imageOut}>
               </figure>
             </div>
-            <div class="card-content">
-                  <div id="file-select" class="file has-name is-fullwidth">
-                    <label class="file-label"> <input class="file-input" name="imagefile" type="file" accept="image/png, image/jpeg">
-                      <span class="file-cta">
-                        <span class="file-icon">
-                          <i class="fas fa-upload"></i>
-                        </span>
-                        <span class="file-label">
-                          Choose a file…
-                        </span>
-                      </span>
-                      <span class="file-name"></span>
-                    </label>
-                  </div>
-              </div>
+        
           </div>
         </div>
+        <div class="columns">
+          <div class="column">lat: </div>
+          <div class="column">{latOut}</div>
+          <div class="field column">
+              <input bind:value={locLat} class="input" id="locLat" name="locLat" placeholder="lat" type="text" />
+          </div>
         
+          <div class="column">lng: </div>
+          <div class="column">{lngOut}</div>
+          <div class="field column">
+              <input bind:value={locLng} class="input" id="locLng" name="locLng" placeholder="lng" type="text" />
+          </div>
+        
+        </div>
       </div> 
     </div>
 </form>
