@@ -9,6 +9,8 @@
     async function addplacemark() {
         let addedplacemark = await placemarkService.createPlacemark(name, categoryname);
         if (addedplacemark) {
+            name = "";
+            categoryname = "";
             goto("/placemark/" + addedplacemark._id);
         } else {
             name = "";
