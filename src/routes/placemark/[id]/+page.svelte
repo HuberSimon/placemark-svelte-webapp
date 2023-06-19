@@ -1,12 +1,12 @@
 <script lang="ts">
     import DetailsList from '$lib/DetailsList.svelte';
-import Header from '$lib/Header.svelte';
+    import Header from '$lib/Header.svelte';
     import MainNavigator from '$lib/MainNavigator.svelte';
 	import PlacemarkMap from '$lib/PlacemarkMap.svelte';
 	import PlacemarksForm from '$lib/PlacemarksForm.svelte';
     import PlacemarksList from '$lib/PlacemarksList.svelte';
 	import type { PageData } from "./$types";
-	export let data: PageData;
+    export let data: PageData;
 
 </script>
 
