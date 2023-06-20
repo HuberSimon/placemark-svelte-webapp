@@ -4,7 +4,7 @@ import type { Category, Placemark } from "./placemark-types";
 
 
 export const placemarkService = {
-    baseUrl:  "http://localhost:3000",// "https://placemark-10-kdbg.onrender.com",
+    baseUrl:  "https://placemark-10-kdbg.onrender.com",// "http://localhost:3000",
 
 	async login(email: string, password: string): Promise<boolean> {
 		try {
