@@ -3,6 +3,7 @@
 import * as L from "leaflet";
 
 export class LeafletMap {
+    [x: string]: any;
     imap = {};
     control = {};
     overlays = {};
