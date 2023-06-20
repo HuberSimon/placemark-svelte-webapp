@@ -2,7 +2,7 @@
     import { placemarkService } from '../services/placemark-service';
 	  import { goto } from "$app/navigation";
 	  import { afterUpdate, onMount } from 'svelte';
-	  import PlacemarkMap from './PlacemarkMap.svelte';
+	  import { loadMap, reloadMap, updateMap } from './PlacemarkMap';
     export let placemarkid: string;
 
     let errorMessage = '';
@@ -24,8 +24,9 @@
     let latOut = '';
     let lngOut = '';
 
-    async function deletePlacemarkDetailsById(id: string) {
-        console.log("delete Detils")
+    async function deletePlacemarkDetails() {
+      await placemarkService.deletePlacemarksDetailsById(placemarkid);
+      reloadMap();
     }
 
     async function loadPlacemarkData() {
@@ -43,39 +44,38 @@
     };
 
     async function save() {
-        
       const updatePlacemark = {
-          _id: id,
-          userid: userId,
-          name: placemarkName,
-          categoryid: categoryId,
-          description: description,
-          location: location,
-          locLat: locLat ? parseFloat(locLat) : 0,
-          locLng: locLng ? parseFloat(locLng) : 0,
-          weather: weather,
-          image: image,
+        _id: id,
+        userid: userId,
+        name: placemarkName,
+        categoryid: categoryId,
+        description: description,
+        location: location,
+        locLat: locLat ? parseFloat(locLat) : 0,
+        locLng: locLng ? parseFloat(locLng) : 0,
+        weather: weather,
+        image: image,
 			};
-      console.log(updatePlacemark)
       const updatedPlacemark = await placemarkService.updatePlacemarkDetails(updatePlacemark);
       if (updatedPlacemark) {
-          descriptionOut = updatedPlacemark.description ;
-          locationOut = updatedPlacemark.location;
-          latOut = updatedPlacemark.locLat.toString();
-          lngOut = updatedPlacemark.locLng.toString();
-          weatherOut = updatedPlacemark.weather;
-          imageOut = updatedPlacemark.image;
-          description = '';
-          location = '';
-          locLat = '';
-          locLng = '';
-          weather = '';
-          loadPlacemarkData();
+        descriptionOut = updatedPlacemark.description ;
+        locationOut = updatedPlacemark.location;
+        latOut = updatedPlacemark.locLat.toString();
+        lngOut = updatedPlacemark.locLng.toString();
+        weatherOut = updatedPlacemark.weather;
+        imageOut = updatedPlacemark.image;
+        description = '';
+        location = '';
+        locLat = '';
+        locLng = '';
+        weather = '';
+        updateMap(updatedPlacemark);
       } else {
-          errorMessage = "Invalid Credentials";
+          console.log("error update Placemark");
       }
-
     }
+
+
 
     onMount(async () => {
       loadPlacemarkData();
@@ -98,7 +98,7 @@
           <div class="column">
             <button class="button is-link fas fa-save"></button>
           </div>
-          <button on:click={() => deletePlacemarkDetailsById(id)} class="button is-rounded is-pulled-right" style="background: none; border: none; padding: 0;">
+          <button on:click={() => deletePlacemarkDetails()} class="button is-rounded is-pulled-right" style="background: none; border: none; padding: 0;">
             <i class="fas fa-trash"></i>
           </button>
         </div>
@@ -128,13 +128,30 @@
 
         <div class="columns">
             <div class="card">
-            <div class="card-image">
-              <figure class="image is-256x256">
-                <img src={imageOut}>
-              </figure>
+              <div class="card-image">
+                <figure class="image is-256x256">
+                  <img src={imageOut}>
+                </figure>
+              </div>
             </div>
-        
-          </div>
+            
+            
+            <div class="card-content">
+              <div id="file-select" class="file has-name is-fullwidth">
+                <label class="file-label"> <input class="file-input" name="imagefile" type="file" accept="image/png, image/jpeg">
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      Choose a file…
+                    </span>
+                    </span>
+                  <span class="file-name"></span>
+                </label>
+              </div>
+            </div>
+
         </div>
         <div class="columns">
           <div class="column">lat: </div>

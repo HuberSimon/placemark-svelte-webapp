@@ -7,7 +7,9 @@
 
   async function deletePlacemarkByString(id: string) {
     await placemarkService.deletePlacemark(id); 
-    location.reload();
+    placemarks = await placemarkService.getUserPlacemarks();
+    userCategories = await placemarkService.getUserCategories();
+    goto("/placemark");
   }
 
 </script>
