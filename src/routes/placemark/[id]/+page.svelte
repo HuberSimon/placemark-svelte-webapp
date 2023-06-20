@@ -1,5 +1,6 @@
 <script lang="ts">
     import DetailsList from '$lib/DetailsList.svelte';
+    import CategoryChart from '$lib/CategoryChart.svelte';
     import Header from '$lib/Header.svelte';
     import MainNavigator from '$lib/MainNavigator.svelte';
 	import PlacemarkMap from '$lib/PlacemarkMap.svelte';
@@ -17,12 +18,13 @@
 <div class="columns">
     <div class="column has-text-centered">
         <DetailsList placemarkid={data.placemarkid} />
-        <PlacemarkMap />
+        <PlacemarkMap placemarkid={data.placemarkid}/>
     </div>
 
     <div class="column box mt-6 has-text-centered">
         <h1 class="title is-4">Start Listing!</h1>
         <PlacemarksForm />
         <PlacemarksList placemarks={data.placemarks} userCategories={data.userCategories}  />
+        <CategoryChart placemarks={data.placemarks} userCategories={data.userCategories} />
     </div>
 </div>

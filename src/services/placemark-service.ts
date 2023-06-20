@@ -4,7 +4,7 @@ import type { Category, Placemark } from "./placemark-types";
 
 
 export const placemarkService = {
-    baseUrl: "https://placemark-10-kdbg.onrender.com", // "http://localhost:3000",
+    baseUrl:  "http://localhost:3000",// "https://placemark-10-kdbg.onrender.com",
 
 	async login(email: string, password: string): Promise<boolean> {
 		try {
@@ -136,6 +136,16 @@ export const placemarkService = {
 		try {
 			const response = await axios.delete(`${this.baseUrl}/api/placemarks/${id}`);
 			return response.status == 204;
+		} catch (error) {
+			return false;
+		}
+	},
+
+
+	async deletePlacemarksDetailsById(id: string){
+		try {
+			const response = await axios.get(`${this.baseUrl}/api/placemarks/${id}/deletedetails`);
+			return response.status == 200;
 		} catch (error) {
 			return false;
 		}
