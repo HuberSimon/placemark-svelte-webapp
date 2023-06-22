@@ -22,7 +22,12 @@
   
 <div class="columns">
     <div class="column has-text-centered">
-        <PlacemarkMap placemarkid={""}/>
+        <div>
+            <PlacemarkMap placemarkid={""} mapid={"placemark-map-Terrain"} activeLayer={"Terrain"}/>
+        </div>
+        <div>
+            <PlacemarkMap placemarkid={""} mapid={"placemark-map-Satellite"} activeLayer={"Satellite"}/>
+        </div>
     </div>
 
     <div class="column box mt-6 has-text-centered">
