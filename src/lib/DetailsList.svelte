@@ -1,89 +1,101 @@
 <script lang="ts">
-    import { placemarkService } from '../services/placemark-service';
-	  import { goto } from "$app/navigation";
-	  import { afterUpdate, onMount } from 'svelte';
-	  import { loadMap, reloadMap, updateMap } from './PlacemarkMap';
-    export let placemarkid: string;
+  import { placemarkService } from '../services/placemark-service';
+  import { goto } from "$app/navigation";
+  import { afterUpdate, onMount } from 'svelte';
+  import { loadMap, reloadMap, updateMap } from './PlacemarkMap';
+  export let placemarkid: string;
 
-    let errorMessage = '';
-    let userId = '';
-    let placemarkName = '';
-    let categoryId = '';
-    let description = '';
-    let location = '';
-    let locLat = '';
-    let locLng = '';
-    let weather = '';
-    let image = '';
-    let id = '';
+  let errorMessage = '';
+  let userId = '';
+  let placemarkName = '';
+  let categoryId = '';
+  let description = '';
+  let location = '';
+  let locLat = '';
+  let locLng = '';
+  let weather = '';
+  let image = '';
+  let id = '';
 
-    let descriptionOut = '';
-    let locationOut = '';
-    let weatherOut = '';
-    let imageOut = '';
-    let latOut = '';
-    let lngOut = '';
+  let descriptionOut = '';
+  let locationOut = '';
+  let weatherOut = '';
+  let imageOut = '';
+  let latOut = '';
+  let lngOut = '';
 
-    async function deletePlacemarkDetails() {
-      await placemarkService.deletePlacemarksDetailsById(placemarkid);
-      reloadMap();
-    }
+  async function deletePlacemarkDetails() {
+    await placemarkService.deletePlacemarksDetailsById(placemarkid);
+    reloadMap();
+  }
 
-    async function loadPlacemarkData() {
-        const placemark = await placemarkService.getPlacemarkById(placemarkid);
-        userId = placemark.userid;
-        placemarkName = placemark.name;
-        categoryId = placemark.categoryid;
-        descriptionOut = placemark.description ? placemark.description : "";
-        locationOut = placemark.location ? placemark.location : "";
-        latOut = placemark.locLat ? placemark.locLat.toString() : '';
-        lngOut = placemark.locLng ? placemark.locLng.toString() : '';
-        weatherOut = placemark.weather ? placemark.weather : "";
-        imageOut = placemark.image;
-        id = placemark._id;
+  async function loadPlacemarkData() {
+      const placemark = await placemarkService.getPlacemarkById(placemarkid);
+      userId = placemark.userid;
+      placemarkName = placemark.name;
+      categoryId = placemark.categoryid;
+      descriptionOut = placemark.description ? placemark.description : "";
+      locationOut = placemark.location ? placemark.location : "";
+      latOut = placemark.locLat ? placemark.locLat.toString() : '';
+      lngOut = placemark.locLng ? placemark.locLng.toString() : '';
+      weatherOut = placemark.weather ? placemark.weather : "";
+      imageOut = placemark.image;
+      id = placemark._id;
+  };
+
+  async function save() {
+    const updatePlacemark = {
+      _id: id,
+      userid: userId,
+      name: placemarkName,
+      categoryid: categoryId,
+      description: description,
+      location: location,
+      locLat: locLat ? parseFloat(locLat) : 0,
+      locLng: locLng ? parseFloat(locLng) : 0,
+      weather: weather,
+      image: image,
     };
-
-    async function save() {
-      const updatePlacemark = {
-        _id: id,
-        userid: userId,
-        name: placemarkName,
-        categoryid: categoryId,
-        description: description,
-        location: location,
-        locLat: locLat ? parseFloat(locLat) : 0,
-        locLng: locLng ? parseFloat(locLng) : 0,
-        weather: weather,
-        image: image,
-			};
-      const updatedPlacemark = await placemarkService.updatePlacemarkDetails(updatePlacemark);
-      if (updatedPlacemark) {
-        descriptionOut = updatedPlacemark.description ;
-        locationOut = updatedPlacemark.location;
-        latOut = updatedPlacemark.locLat.toString();
-        lngOut = updatedPlacemark.locLng.toString();
-        weatherOut = updatedPlacemark.weather;
-        imageOut = updatedPlacemark.image;
-        description = '';
-        location = '';
-        locLat = '';
-        locLng = '';
-        weather = '';
-        updateMap(updatedPlacemark);
-      } else {
-          console.log("error update Placemark");
-      }
+    const updatedPlacemark = await placemarkService.updatePlacemarkDetails(updatePlacemark);
+    if (updatedPlacemark) {
+      descriptionOut = updatedPlacemark.description ;
+      locationOut = updatedPlacemark.location;
+      latOut = updatedPlacemark.locLat.toString();
+      lngOut = updatedPlacemark.locLng.toString();
+      weatherOut = updatedPlacemark.weather;
+      imageOut = updatedPlacemark.image;
+      description = '';
+      location = '';
+      locLat = '';
+      locLng = '';
+      weather = '';
+      updateMap(updatedPlacemark);
+    } else {
+        console.log("error update Placemark");
     }
+  }
+
+  const fileInput = document.querySelector<HTMLInputElement>(".file-input");
+  if (fileInput) {
+    fileInput.onchange = () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        const fileName = document.querySelector<HTMLElement>(".file-name");
+        if (fileName) {
+          fileName.textContent = fileInput.files[0].name;
+        }
+      }
+    };
+  }
 
 
 
-    onMount(async () => {
-      loadPlacemarkData();
-      });
-
-    afterUpdate(() => {
-      loadPlacemarkData();
+  onMount(async () => {
+    loadPlacemarkData();
     });
+
+  afterUpdate(() => {
+    loadPlacemarkData();
+  });
 
 </script>
 
@@ -134,24 +146,6 @@
                 </figure>
               </div>
             </div>
-            
-            
-            <div class="card-content">
-              <div id="file-select" class="file has-name is-fullwidth">
-                <label class="file-label"> <input class="file-input" name="imagefile" type="file" accept="image/png, image/jpeg">
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Choose a file…
-                    </span>
-                    </span>
-                  <span class="file-name"></span>
-                </label>
-              </div>
-            </div>
-
         </div>
         <div class="columns">
           <div class="column">lat: </div>
