@@ -3,14 +3,16 @@
 	import { loadMap, zoomToMarker } from "./PlacemarkMap";
 
     export let placemarkid: string;
+    export let activeLayer: string;
+    export let mapid: string;
 
     onMount(async () => {
-        loadMap();
+        loadMap(mapid, activeLayer);
     });
     afterUpdate(async () => {
         if (placemarkid !== "")
-            zoomToMarker(placemarkid);
+            zoomToMarker(mapid, placemarkid);
     });
 </script>
 
-<div class="box" id="placemark-map" style="height:75vh" />
+<div class="box" id={mapid} style="height:50vh" />

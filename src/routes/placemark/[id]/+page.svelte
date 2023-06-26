@@ -6,8 +6,16 @@
 	import PlacemarkMap from '$lib/PlacemarkMap.svelte';
 	import PlacemarksForm from '$lib/PlacemarksForm.svelte';
     import PlacemarksList from '$lib/PlacemarksList.svelte';
-	import type { PageData } from "./$types";
+	import type { PageData, RouteParams } from "./$types";
+	import { afterUpdate } from 'svelte';
+	import { zoomToMarker } from '$lib/PlacemarkMap';
     export let data: PageData;
+
+    afterUpdate(async () => {
+        if (data.placemarkid !== "")
+            zoomToMarker("placemark-map-Terrain", data.placemarkid);
+            zoomToMarker("placemark-map-Satellite", data.placemarkid);
+    });
 
 </script>
 
@@ -18,7 +26,12 @@
 <div class="columns">
     <div class="column has-text-centered">
         <DetailsList placemarkid={data.placemarkid} />
-        <PlacemarkMap placemarkid={data.placemarkid}/>
+        <div>
+            <PlacemarkMap placemarkid={""} mapid={"placemark-map-Terrain"} activeLayer={"Terrain"}/>
+        </div>
+        <div>
+            <PlacemarkMap placemarkid={""} mapid={"placemark-map-Satellite"} activeLayer={"Satellite"}/>
+        </div>
     </div>
 
     <div class="column box mt-6 has-text-centered">
