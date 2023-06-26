@@ -146,24 +146,6 @@
                 </figure>
               </div>
             </div>
-            
-            
-            <div class="card-content">
-              <div id="file-select" class="file has-name is-fullwidth">
-                <label class="file-label"> <input class="file-input" name="imagefile" type="file" accept="image/png, image/jpeg">
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Choose a file…
-                    </span>
-                    </span>
-                  <span class="file-name"></span>
-                </label>
-              </div>
-            </div>
-
         </div>
         <div class="columns">
           <div class="column">lat: </div>
